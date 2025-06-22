@@ -1,0 +1,44 @@
+from pinecone import Pinecone
+from sentence_transformers import SentenceTransformer
+import google.generativeai as genai
+from dotenv import load_dotenv
+import os
+
+load_dotenv()
+
+# Load environment
+PINECONE_API_KEY = os.getenv("PINECONE_API_KEY")
+INDEX_NAME = os.getenv("INDEX_NAME")
+GEMINI_API_KEY = os.getenv("GEMINI_API_KEY")
+
+# Init
+pc = Pinecone(api_key=PINECONE_API_KEY)
+index = pc.Index(INDEX_NAME)
+model = SentenceTransformer("all-MiniLM-L6-v2")
+genai.configure(api_key=GEMINI_API_KEY)
+gemini_model = genai.GenerativeModel("gemini-1.5-flash")
+
+def answer_question(subject: str, question: str, top_k: int = 5) -> str:
+    vector = model.encode(question).tolist()
+
+    response = index.query(
+        vector=vector,
+        top_k=top_k,
+        include_metadata=True,
+        filter={"subject": subject}
+    )
+
+    contexts = [match["metadata"]["text"] for match in response["matches"]]
+    context_block = "\n\n---\n\n".join(contexts)
+
+    prompt = f"""
+You are a helpful computer science tutor. Use the context below to answer the user's question clearly and concisely.
+
+Context:
+{context_block}
+
+Question: {question}
+"""
+
+    response = gemini_model.generate_content(prompt)
+    return response.text

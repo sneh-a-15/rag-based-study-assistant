@@ -1,0 +1,20 @@
+# .gitignore
+
+# Python (backend)
+__pycache__/
+*.pyc
+.env
+venv/
+*.sqlite3
+
+# Node (frontend)
+node_modules/
+.next/
+dist/
+.env.local
+.env.development
+.env.production
+
+# OS files
+.DS_Store
+Thumbs.db
