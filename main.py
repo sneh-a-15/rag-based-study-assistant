@@ -12,11 +12,11 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
-@app.get("/")
+@app.get("/api")
 def root():
     return {"message": "FastAPI is running!"}
 
-@app.post("/ask")
+@app.post("/api/ask")
 async def ask(request: Request):
     data = await request.json()
     question = data.get("question")
