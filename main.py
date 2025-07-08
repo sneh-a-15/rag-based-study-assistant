@@ -1,63 +1,26 @@
-from pinecone import Pinecone
-import pdfplumber
-from sentence_transformers import SentenceTransformer
-from tqdm import tqdm
+from fastapi import FastAPI, Request
+from fastapi.middleware.cors import CORSMiddleware
+from rag_utils import answer_question 
 
-API_KEY = "pcsk_5ATdWc_RKn8FWqmTvVz6xi7igLP7fuDDqiGKxCqYPHRWusc3daX8RUwUUuJEKGZNnj2Tiq"
-INDEX_NAME = "cs-study-assistant"
-MODEL_NAME = 'all-MiniLM-L6-v2'
+app = FastAPI()
 
-# === INIT PINECONE ===
-print("[🔁] Connecting to Pinecone...")
-pc = Pinecone(api_key=API_KEY)
-index = pc.Index(INDEX_NAME)
-print("[✅] Connected to Pinecone index:", INDEX_NAME)
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=["*"],  
+    allow_credentials=True,
+    allow_methods=["*"],
+    allow_headers=["*"],
+)
 
-# === INIT EMBEDDING MODEL ===
-print("[🧠] Loading embedding model...")
-model = SentenceTransformer(MODEL_NAME)
-print("[✅] Model loaded.")
+@app.get("/")
+def root():
+    return {"message": "FastAPI is running!"}
 
-# === CHUNKING FUNCTION ===
-def extract_chunks_from_pdf(file_path, chunk_size=400):
-    print(f"[📄] Reading PDF: {file_path}")
-    chunks = []
-    with pdfplumber.open(file_path) as pdf:
-        for page_num, page in enumerate(pdf.pages):
-            text = page.extract_text()
-            if text:
-                words = text.split()
-                for i in range(0, len(words), chunk_size):
-                    chunk = ' '.join(words[i:i+chunk_size])
-                    chunks.append(chunk)
-    print(f"[📚] Total chunks extracted: {len(chunks)}")
-    return chunks
+@app.post("/ask")
+async def ask(request: Request):
+    data = await request.json()
+    question = data.get("question")
+    subject = data.get("subject")
 
-# === UPLOAD FUNCTION ===
-def process_and_upload(subject_name, file_path):
-    chunks = extract_chunks_from_pdf(file_path)
-    
-    print(f"[📡] Uploading {subject_name} chunks to Pinecone...")
-    for i, chunk in tqdm(enumerate(chunks), total=len(chunks)):
-        vector = model.encode(chunk).tolist()
-        metadata = {
-            "subject": subject_name,
-            "chunk_id": i,
-            "text": chunk
-        }
-
-        if i < 1:
-            print("\n--- Sample Chunk ---")
-            print("Chunk ID:", f"{subject_name}_{i}")
-            print("Text:", chunk[:200], "...")
-            print("--------------------\n")
-
-        index.upsert([
-            (f"{subject_name}_{i}", vector, metadata)
-        ])
-
-    print(f"[✅] {subject_name} upload complete!\n")
-
-# === RUN FOR ALL SUBJECTS ===
-process_and_upload("DBMS", "data/DBMS.pdf")
-process_and_upload("OS", "data/OS.pdf")
+    answer = answer_question(subject, question)
+    return {"answer": answer}
