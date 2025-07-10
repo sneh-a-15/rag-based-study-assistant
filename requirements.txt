@@ -1,6 +1,6 @@
 fastapi
 uvicorn
 pinecone
-sentence-transformers
+modal
 google-generativeai
 python-dotenv

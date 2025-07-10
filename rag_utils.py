@@ -1,12 +1,12 @@
 from pinecone import Pinecone
-from sentence_transformers import SentenceTransformer
 import google.generativeai as genai
 from dotenv import load_dotenv
 import os
+import modal
 
 load_dotenv()
 
-# Load environment
+# Environment variables
 PINECONE_API_KEY = os.getenv("PINECONE_API_KEY")
 INDEX_NAME = os.getenv("INDEX_NAME")
 GEMINI_API_KEY = os.getenv("GEMINI_API_KEY")
@@ -14,12 +14,18 @@ GEMINI_API_KEY = os.getenv("GEMINI_API_KEY")
 # Init
 pc = Pinecone(api_key=PINECONE_API_KEY)
 index = pc.Index(INDEX_NAME)
-model = SentenceTransformer("all-MiniLM-L6-v2")
 genai.configure(api_key=GEMINI_API_KEY)
 gemini_model = genai.GenerativeModel("gemini-1.5-flash")
 
+# Modal embedding function
+embedding_fn = modal.Function.lookup(
+    "sentence-transformer-embedder",  # <- change if you used another app name
+    "embed_text"
+)
+
 def answer_question(subject: str, question: str, top_k: int = 5) -> str:
-    vector = model.encode(question).tolist()
+    # Embed via Modal
+    vector = embedding_fn.call(question)
 
     response = index.query(
         vector=vector,
