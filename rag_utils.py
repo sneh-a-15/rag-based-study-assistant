@@ -25,7 +25,7 @@ embedding_fn = modal.Function.lookup(
 
 def answer_question(subject: str, question: str, top_k: int = 5) -> str:
     # Embed via Modal
-    vector = embedding_fn.call(question)
+    vector = embedding_fn.cremote(question)
 
     response = index.query(
         vector=vector,
