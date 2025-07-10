@@ -1,31 +1,42 @@
-'use client';
+"use client";
 
-import { useState } from 'react';
-import { BookOpen, Brain, Sparkles, Send, Loader2, Network, Database, Monitor } from 'lucide-react';
+import { useState } from "react";
+import {
+  BookOpen,
+  Brain,
+  Sparkles,
+  Send,
+  Loader2,
+  Network,
+  Database,
+  Monitor,
+} from "lucide-react";
 
 export default function Home() {
-  const [subject, setSubject] = useState('CN');
-  const [question, setQuestion] = useState('');
-  const [answer, setAnswer] = useState('');
+  const [subject, setSubject] = useState("CN");
+  const [question, setQuestion] = useState("");
+  const [answer, setAnswer] = useState("");
   const [loading, setLoading] = useState(false);
 
   const handleSubmit = async () => {
     if (!question.trim()) return;
 
     setLoading(true);
-    setAnswer('');
+    setAnswer("");
 
     try {
-      const res = await fetch('http://localhost:8000/ask', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ question, subject }),
-      });
-
+      const res = await fetch(
+        `${process.env.NEXT_PUBLIC_BACKEND_URL}/api/ask`,
+        {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ question, subject }),
+        }
+      );
       const data = await res.json();
-      setAnswer(data.answer || 'No answer returned.');
+      setAnswer(data.answer || "No answer returned.");
     } catch (err) {
-      setAnswer('Error fetching answer.');
+      setAnswer("Error fetching answer.");
       console.error(err);
     } finally {
       setLoading(false);
@@ -33,12 +44,27 @@ export default function Home() {
   };
 
   const subjects = [
-    { value: 'CN', label: 'Computer Networks', icon: Network, color: 'from-blue-600 to-indigo-700' },
-    { value: 'OS', label: 'Operating Systems', icon: Monitor, color: 'from-indigo-600 to-purple-700' },
-    { value: 'DBMS', label: 'Database Management', icon: Database, color: 'from-purple-600 to-blue-700' }
+    {
+      value: "CN",
+      label: "Computer Networks",
+      icon: Network,
+      color: "from-blue-600 to-indigo-700",
+    },
+    {
+      value: "OS",
+      label: "Operating Systems",
+      icon: Monitor,
+      color: "from-indigo-600 to-purple-700",
+    },
+    {
+      value: "DBMS",
+      label: "Database Management",
+      icon: Database,
+      color: "from-purple-600 to-blue-700",
+    },
   ];
 
-  const selectedSubject = subjects.find(s => s.value === subject);
+  const selectedSubject = subjects.find((s) => s.value === subject);
 
   return (
     <main className="min-h-screen bg-gradient-to-br from-slate-950 via-blue-950 to-indigo-950 relative overflow-hidden">
@@ -47,20 +73,20 @@ export default function Home() {
         {/* Primary glow orbs */}
         <div className="absolute -top-1/3 -left-1/3 w-96 h-96 bg-gradient-radial from-blue-400/8 via-blue-500/4 to-transparent rounded-full blur-3xl animate-pulse-slow"></div>
         <div className="absolute -bottom-1/3 -right-1/3 w-96 h-96 bg-gradient-radial from-indigo-400/8 via-purple-500/4 to-transparent rounded-full blur-3xl animate-pulse-slow delay-1000"></div>
-        
+
         {/* Floating light particles */}
         <div className="absolute top-1/4 left-1/4 w-2 h-2 bg-blue-400 rounded-full opacity-60 animate-float-particle"></div>
         <div className="absolute top-1/3 right-1/4 w-1 h-1 bg-indigo-400 rounded-full opacity-40 animate-float-particle delay-500"></div>
         <div className="absolute bottom-1/3 left-1/3 w-1.5 h-1.5 bg-purple-400 rounded-full opacity-50 animate-float-particle delay-1000"></div>
         <div className="absolute bottom-1/4 right-1/3 w-1 h-1 bg-cyan-400 rounded-full opacity-30 animate-float-particle delay-1500"></div>
-        
+
         {/* Scanning light beams */}
         <div className="absolute top-0 left-1/4 w-px h-full bg-gradient-to-b from-transparent via-blue-400/20 to-transparent animate-scan-vertical"></div>
         <div className="absolute top-1/3 left-0 w-full h-px bg-gradient-to-r from-transparent via-indigo-400/20 to-transparent animate-scan-horizontal"></div>
-        
+
         {/* Grid with light traces */}
         <div className="absolute inset-0 bg-[linear-gradient(rgba(59,130,246,0.02)_1px,transparent_1px),linear-gradient(90deg,rgba(59,130,246,0.02)_1px,transparent_1px)] bg-[size:40px_40px] opacity-30"></div>
-        
+
         {/* Subtle glow overlay */}
         <div className="absolute inset-0 bg-gradient-to-t from-blue-950/50 via-transparent to-indigo-950/30"></div>
       </div>
@@ -99,7 +125,9 @@ export default function Home() {
                     <div className="p-2 rounded-xl bg-gradient-to-r from-blue-500/10 to-indigo-500/10 mr-4 border border-blue-400/20">
                       <BookOpen className="w-6 h-6 text-blue-400" />
                     </div>
-                    <h2 className="text-2xl font-light text-white tracking-wide">Ask Your Question</h2>
+                    <h2 className="text-2xl font-light text-white tracking-wide">
+                      Ask Your Question
+                    </h2>
                   </div>
 
                   <div className="space-y-8">
@@ -117,17 +145,27 @@ export default function Home() {
                               onClick={() => setSubject(subj.value)}
                               className={`group relative flex items-center p-4 rounded-xl border transition-all duration-300 ${
                                 subject === subj.value
-                                  ? 'bg-gradient-to-r from-blue-600/15 to-indigo-600/15 border-blue-400/30 shadow-lg shadow-blue-500/10 scale-[1.02]'
-                                  : 'bg-slate-900/30 border-slate-700/20 hover:border-blue-400/20 hover:bg-slate-900/50 hover:scale-[1.01]'
+                                  ? "bg-gradient-to-r from-blue-600/15 to-indigo-600/15 border-blue-400/30 shadow-lg shadow-blue-500/10 scale-[1.02]"
+                                  : "bg-slate-900/30 border-slate-700/20 hover:border-blue-400/20 hover:bg-slate-900/50 hover:scale-[1.01]"
                               }`}
                             >
-                              <div className={`absolute inset-0 rounded-xl bg-gradient-to-r ${subj.color} opacity-0 ${
-                                subject === subj.value ? 'opacity-5' : 'group-hover:opacity-5'
-                              } transition-opacity duration-300`}></div>
-                              <div className={`relative p-2 rounded-lg bg-gradient-to-r ${subj.color} mr-4 shadow-lg opacity-80`}>
+                              <div
+                                className={`absolute inset-0 rounded-xl bg-gradient-to-r ${
+                                  subj.color
+                                } opacity-0 ${
+                                  subject === subj.value
+                                    ? "opacity-5"
+                                    : "group-hover:opacity-5"
+                                } transition-opacity duration-300`}
+                              ></div>
+                              <div
+                                className={`relative p-2 rounded-lg bg-gradient-to-r ${subj.color} mr-4 shadow-lg opacity-80`}
+                              >
                                 <IconComponent className="w-5 h-5 text-white" />
                               </div>
-                              <span className="relative text-white font-light text-left flex-1">{subj.label}</span>
+                              <span className="relative text-white font-light text-left flex-1">
+                                {subj.label}
+                              </span>
                               {subject === subj.value && (
                                 <div className="relative flex items-center space-x-2">
                                   <div className="w-2 h-2 bg-blue-400 rounded-full animate-pulse"></div>
@@ -170,12 +208,16 @@ export default function Home() {
                       {loading ? (
                         <>
                           <Loader2 className="w-5 h-5 mr-3 animate-spin" />
-                          <span className="font-light tracking-wide">Analyzing Question...</span>
+                          <span className="font-light tracking-wide">
+                            Analyzing Question...
+                          </span>
                         </>
                       ) : (
                         <>
                           <Send className="w-5 h-5 mr-3 group-hover:translate-x-1 transition-transform duration-200" />
-                          <span className="font-light tracking-wide">Get Answer</span>
+                          <span className="font-light tracking-wide">
+                            Get Answer
+                          </span>
                         </>
                       )}
                     </button>
@@ -192,9 +234,13 @@ export default function Home() {
                 <div className="relative bg-slate-950/80 backdrop-blur-xl rounded-3xl p-8 border border-indigo-500/10 h-full flex flex-col min-h-[600px] shadow-2xl shadow-indigo-500/5">
                   <div className="flex items-center mb-8">
                     <div className="w-8 h-8 bg-gradient-to-r from-indigo-500 to-cyan-600 rounded-lg mr-4 flex items-center justify-center shadow-lg border border-indigo-400/20">
-                      {selectedSubject && <selectedSubject.icon className="w-4 h-4 text-white" />}
+                      {selectedSubject && (
+                        <selectedSubject.icon className="w-4 h-4 text-white" />
+                      )}
                     </div>
-                    <h2 className="text-2xl font-light text-white tracking-wide">Answer</h2>
+                    <h2 className="text-2xl font-light text-white tracking-wide">
+                      Answer
+                    </h2>
                     {subject && (
                       <span className="ml-auto text-xs font-normal text-blue-300/80 bg-blue-600/10 px-3 py-1 rounded-full border border-blue-500/20">
                         {selectedSubject?.label}
@@ -212,8 +258,12 @@ export default function Home() {
                               <div className="absolute inset-0 rounded-full border-2 border-blue-400/10"></div>
                               <div className="absolute inset-2 rounded-full bg-blue-400/5 animate-pulse"></div>
                             </div>
-                            <p className="text-blue-200/80 text-lg font-light animate-pulse">Generating your answer...</p>
-                            <p className="text-blue-300/50 text-sm mt-2 font-light">This may take a few moments</p>
+                            <p className="text-blue-200/80 text-lg font-light animate-pulse">
+                              Generating your answer...
+                            </p>
+                            <p className="text-blue-300/50 text-sm mt-2 font-light">
+                              This may take a few moments
+                            </p>
                           </div>
                         </div>
                       ) : answer ? (
@@ -231,8 +281,12 @@ export default function Home() {
                               </div>
                               <div className="absolute -inset-4 bg-gradient-to-r from-blue-500/5 to-indigo-500/5 rounded-full blur-xl animate-pulse-subtle"></div>
                             </div>
-                            <p className="text-slate-300/90 text-xl font-light mb-2">Ready to Help</p>
-                            <p className="text-slate-400/70 text-sm font-light">Ask a question to get started with your CS studies</p>
+                            <p className="text-slate-300/90 text-xl font-light mb-2">
+                              Ready to Help
+                            </p>
+                            <p className="text-slate-400/70 text-sm font-light">
+                              Ask a question to get started with your CS studies
+                            </p>
                           </div>
                         </div>
                       )}
@@ -247,67 +301,115 @@ export default function Home() {
 
       <style jsx>{`
         @keyframes float-particle {
-          0%, 100% { transform: translateY(0px) translateX(0px) scale(1); opacity: 0.6; }
-          25% { transform: translateY(-20px) translateX(10px) scale(1.1); opacity: 0.8; }
-          50% { transform: translateY(-10px) translateX(-5px) scale(0.9); opacity: 0.4; }
-          75% { transform: translateY(-25px) translateX(15px) scale(1.2); opacity: 0.7; }
+          0%,
+          100% {
+            transform: translateY(0px) translateX(0px) scale(1);
+            opacity: 0.6;
+          }
+          25% {
+            transform: translateY(-20px) translateX(10px) scale(1.1);
+            opacity: 0.8;
+          }
+          50% {
+            transform: translateY(-10px) translateX(-5px) scale(0.9);
+            opacity: 0.4;
+          }
+          75% {
+            transform: translateY(-25px) translateX(15px) scale(1.2);
+            opacity: 0.7;
+          }
         }
-        
+
         @keyframes scan-vertical {
-          0% { transform: translateX(-100%); opacity: 0; }
-          50% { opacity: 1; }
-          100% { transform: translateX(100vw); opacity: 0; }
+          0% {
+            transform: translateX(-100%);
+            opacity: 0;
+          }
+          50% {
+            opacity: 1;
+          }
+          100% {
+            transform: translateX(100vw);
+            opacity: 0;
+          }
         }
-        
+
         @keyframes scan-horizontal {
-          0% { transform: translateY(-100%); opacity: 0; }
-          50% { opacity: 1; }
-          100% { transform: translateY(100vh); opacity: 0; }
+          0% {
+            transform: translateY(-100%);
+            opacity: 0;
+          }
+          50% {
+            opacity: 1;
+          }
+          100% {
+            transform: translateY(100vh);
+            opacity: 0;
+          }
         }
-        
+
         @keyframes pulse-slow {
-          0%, 100% { transform: scale(1); opacity: 0.3; }
-          50% { transform: scale(1.1); opacity: 0.6; }
+          0%,
+          100% {
+            transform: scale(1);
+            opacity: 0.3;
+          }
+          50% {
+            transform: scale(1.1);
+            opacity: 0.6;
+          }
         }
-        
+
         @keyframes pulse-glow {
-          0%, 100% { transform: scale(1); opacity: 0.8; }
-          50% { transform: scale(1.05); opacity: 1; }
+          0%,
+          100% {
+            transform: scale(1);
+            opacity: 0.8;
+          }
+          50% {
+            transform: scale(1.05);
+            opacity: 1;
+          }
         }
-        
+
         @keyframes pulse-subtle {
-          0%, 100% { opacity: 0.2; }
-          50% { opacity: 0.4; }
+          0%,
+          100% {
+            opacity: 0.2;
+          }
+          50% {
+            opacity: 0.4;
+          }
         }
-        
+
         .animate-float-particle {
           animation: float-particle 8s ease-in-out infinite;
         }
-        
+
         .animate-scan-vertical {
           animation: scan-vertical 15s linear infinite;
         }
-        
+
         .animate-scan-horizontal {
           animation: scan-horizontal 20s linear infinite;
         }
-        
+
         .animate-pulse-slow {
           animation: pulse-slow 4s ease-in-out infinite;
         }
-        
+
         .animate-pulse-glow {
           animation: pulse-glow 3s ease-in-out infinite;
         }
-        
+
         .animate-pulse-subtle {
           animation: pulse-subtle 6s ease-in-out infinite;
         }
-        
+
         .bg-gradient-radial {
           background: radial-gradient(circle, var(--tw-gradient-stops));
         }
-        
+
         .custom-scrollbar::-webkit-scrollbar {
           width: 4px;
         }
