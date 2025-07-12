@@ -12,10 +12,10 @@ const geistMono = Geist_Mono({
   subsets: ["latin"],
 });
 
-export const metadata: Metadata = {
-  title: "Querion – Ask. Understand. Master Core CS.",
-  description: "Get instant, comprehensive answers to your computer science questions with our AI-powered study assistant.",
-};
+export const metadata = {
+  title: "AskMilo – Learn Smarter. CS Made Simple.",
+  description: "Your AI-powered guide to mastering core Computer Science topics with clear answers and follow-ups tailored to your questions.",
+}
 
 export default function RootLayout({
   children,

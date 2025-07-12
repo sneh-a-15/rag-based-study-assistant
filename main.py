@@ -1,6 +1,6 @@
 from fastapi import FastAPI, Request
 from fastapi.middleware.cors import CORSMiddleware
-from rag_utils import answer_question 
+from rag_utils import answer_question, generate_followups  # logic handled in utils
 
 app = FastAPI()
 
@@ -24,3 +24,12 @@ async def ask(request: Request):
 
     answer = answer_question(subject, question)
     return {"answer": answer}
+
+@app.post("/api/followup")
+async def followup(request: Request):
+    data = await request.json()
+    question = data.get("question")
+    subject = data.get("subject")
+
+    followups = generate_followups(subject, question)
+    return {"followups": followups}
