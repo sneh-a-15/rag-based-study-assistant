@@ -1,7 +1,6 @@
 "use client"
 
 import { useState } from "react"
-import { Analytics } from "@vercel/analytics/next"
 import { Brain, Send, Loader2, Network, Database, Monitor, ArrowRight } from "lucide-react"
 
 export default function Home() {
