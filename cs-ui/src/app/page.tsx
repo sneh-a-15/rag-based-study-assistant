@@ -1,6 +1,7 @@
 "use client"
 
 import { useState } from "react"
+import { Analytics } from "@vercel/analytics/next"
 import { Brain, Send, Loader2, Network, Database, Monitor, ArrowRight } from "lucide-react"
 
 export default function Home() {
@@ -62,7 +63,8 @@ export default function Home() {
   return (
     <>
       <title>AskMilo – Learn Smarter. CS Made Simple.</title>
-          <main className="min-h-screen flex items-center justify-center bg-gradient-to-br from-blue-100 via-cyan-100 to-blue-50 text-gray-800 font-sans p-6 relative overflow-hidden">
+          <main className="min-h-screen bg-gradient-to-br from-blue-100 via-cyan-100 to-blue-50 text-gray-800 font-sans p-20 relative overflow-hidden">
+  <div className="flex flex-col items-center w-full">
         <div className="absolute inset-0 pointer-events-none">
           <div className="absolute top-1/4 left-1/4 w-72 h-72 bg-blue-200/30 rounded-full blur-3xl animate-pulse"></div>
           <div className="absolute bottom-1/4 right-1/4 w-72 h-72 bg-cyan-200/30 rounded-full blur-3xl animate-pulse"></div>
@@ -165,6 +167,7 @@ export default function Home() {
               )}
             </div>
           </section>
+        </div>
         </div>
 
         <style jsx global>{`
